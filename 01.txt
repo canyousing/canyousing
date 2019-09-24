@@ -1,0 +1,110 @@
+cd /etc/sysconfig/network-scripts/
+vi ifcfg-ens33
+重启网络服务：systemct1 restart network
+文件上传下载：
+ sftp:lls lpwd put get
+ lrzsz:rz/拖拽   sz
+3.免密登陆
+    ssh
+
+
+八.定时器
+    1.yum install crontabs-安装crontab
+    2.启动服务   systemctl start crond
+    3.开机启动   systemctl enable crond
+    4.crontab -e 编辑定时任务
+    5.crontab -r 删除定时任务
+    6.* * * * * command
+   分 小时 天 月 周
+
+九.shell
+   1.编辑脚本，首先要定义解释器
+   2.修改权限
+   3.执行脚本
+     ./test.sh
+     /bin/bash  test.sh
+     /...../test.sh
+   4.变量
+   v_name=value
+   $
+
+镜像的上传和下载
+1.申请账号：https://hub.docker.com/ 申请一个账号，dockerercanyousing
+镜像本地保存和加载
+1.docker save -o xxx.tar.gz canyousing/ss1:v1
+2.本地镜像包加载成镜像
+ docker load --input xxx.tar.gz
+ docker load < xxx.tar.gz
+ cat rarlinux-x64-5.3.0.tar.gz | docker import - 
+ 镜像的删除
+ docker rmi image_id
+ docker rmi -f image_id
+容器的运行
+docker run xxx/centos:v1 xxx
+docker run -t -i xxx/centos:v1 /bin/bash
+docker start/stop cid
+后台守护程序
+docker run -d docker.io/centos /bin/sh -c "while true;
+docker ps  查找容器运行ID
+docker logs cid
+容器的后台运行
+1.attach
+   docker run -itd my/centos:v1.0 /bin/bash
+   docker ps
+   docker attach cid/names
+   缺点:它是同步的，容易阻塞
+2.nsenter
+ #下载源码包
+ 2.tar -zxvf util-linux-2.24.tar.gz
+ #进入解压包的根目录
+ 3.cd util-linux-2.24
+ #编译，有可能需要安装gcc yum install gcc
+4../configure --without-ncurses && make nsenter
+#编译后nsenter
+
+2.nsenter
+5.cp nsentern /usr/local/bin
+#获取pid
+6.
+docker inspect 
+容器的导入 
+1.导出
+  sudo docker export d8ac45209ale > centos.tar.gz
+2.
+搭建私有仓库
+1.下载工具registry
+      docker pull registry
+2.修改配置文件/etc/docker/daemon.json
+  { "insecure-registries": ["192.168.72.14:5000"] } 
+3.重新启动docker服务
+
+数据卷
+1.默认的数据卷创建
+cid：
+docker run -it -p -d --name data1 -v /datas my/centos:v1.1 /bin
+2.另外运行一个容器，共享data1的数据卷
+主机
+
+
+
+
+
+问题总结：
+	1.权限问题：Cannot open directory . Permission denied
+			加参数--privileged=true
+		docker run -d -P -it --name web10 -v /root/docker:/opt/docker:rw --privileged=true 192.163.41.11:5000/centos /bin/bash 
+	2.容器自动退出
+		运行容器：docker run -dit my/centos /bin/bash
+			attach / nsenter
+		进入容器：docker exec -it cid /bin/bash
+	3.ipv4 disable 
+		vi /usr/lib/sysctl.d/00-system.conf
+		添加net.ipv4.ip_forward=1
+		#重启network服务
+		systemctl restart network
+
+echo "cccc">1.txt(加数据） or vi 1.txt
+docker rm -f 加（目录）
+yum install lrzsz （下载rz命令）
+
+删除容器(docker rmi -f xxxxxxxxx）
